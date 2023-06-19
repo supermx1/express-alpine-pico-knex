@@ -1,5 +1,9 @@
 const express = require('express');
 const app = express();
+// const dotenv = require('dotenv')
+require('dotenv').config({
+    path: `${__dirname}/.env`
+});
 app.use(express.json());
 // Set default extension as ejs
 app.set('view engine', 'ejs');
@@ -7,16 +11,18 @@ app.set('view engine', 'ejs');
 const knex = require('knex')({
     client: 'mysql2',
     connection: {
-      host : 'db4free.net',
-      port : 3306,
-      user : 'expressalpine',
-      password : 'expressalpine',
-      database : 'expressalpine'
+      host : process.env.DBHOST,
+      port : process.env.DBPORT,
+      user : process.env.DBUSER,
+      password : process.env.DBPASSWORD,
+      database : process.env.DB
     }
-  });
+});
+console.log(process.env)
 
 
 app.get("/api/get/:table", async (req, res) => {
+    console.log(process.env)
     try {
         const data = await knex(req.params.table)
             .offset(Number(req.query.offset) || 0)
