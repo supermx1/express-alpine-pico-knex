@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/picocss/2.0.0-alpha1/pico.min.css">
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <title>Learn NodeJS</title>
+</head>
+
+<body x-data="index()">
+    <header class="container">
+        <h1>Get Started</h1>
+    </header>
+    <div class="container">
+
+        <form x-on:submit.prevent="post()">
+            <label for="fullname">Fullname</label>
+            <input x-model="data.fullname" type="text" placeholder="Enter fullname" id="fullname" required>
+
+            <label for="age">Age</label>
+            <input x-model="data.age" type="number" placeholder="Enter Age" id="age" required>
+
+            <label for="sex">Sex</label>
+            <select x-model="data.sex" id="sex" required>
+                <option selected>Select Sex</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+
+            <label for="dob">Date of Birth</label>
+            <input x-model="data.dob" type="date" id="dob">
+
+            <label for="verified">
+                <input role="switch" type="checkbox" id="age">
+                Verified
+            </label>
+
+            <button type="submit">Submit Form</button>
+        </form>
+
+        
+        <form x-on:submit.prevent="get()" class="grid">
+
+            <div>
+                <label for="id">ID</label>
+            <input x-model="data.id" type="number" placeholder="Enter ID" id="id" required>
+            </div>
+            
+            <div class="">
+                <button type="submit">Get Data</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function index() {
+            return {
+                data: {
+                    fullname: '',
+                    age: 18,
+                    sex: '',
+                    dob: null,
+                    // verified: false,
+                    id: null,
+                },
+                post() {
+                    fetch("/api/post/app", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(this.data),
+                    })
+                        .then(r => r.json())
+                        .then(d => {
+                            if (d['error']) {
+                                alert("Error: " + d['error'])
+                            }
+                            else {
+                                alert("Success: CReated record with id: " + d[0]);
+                                console.log(d);
+                            }
+                        })
+                        .catch((error) => {
+                            console.log("WHAHALA!!!", error)
+                        });
+                },
+                get(){
+                    fetch(`/api/getID/app?id=${this.data.id}`)
+                        .then(r => r.json())
+                        .then(d => {
+                            if (d['error']) {
+                                alert("Error: " + d['error'])
+                            }
+                            else {
+                                alert("Success: CReated record with id: " + JSON.stringify(d));
+                                console.log(d);
+                            }
+                        })
+                        .catch((error) => {
+                            console.log("WHAHALA!!!", error)
+                        });
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
